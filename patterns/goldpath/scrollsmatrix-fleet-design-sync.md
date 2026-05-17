@@ -26,6 +26,7 @@ Assume **sibling directories** `scaffold/` and `scrollsmatrix/` under the same p
 | --- | --- |
 | `.cursor/rules/follow-devscrolls-ui-foundation.mdc` | same |
 | `.cursor/rules/agents-run-local-commands.mdc` | same |
+| `.cursor/rules/commit-push-ship-worker-production.mdc` | same |
 | `.cursor/rules/cloudflare-workers-builds-vcs-only.mdc` | same |
 | `.cursor/rules/consult-design-md-for-branding.mdc` | same |
 | `src/styles/app.css` | same |
@@ -73,6 +74,7 @@ From **`scrollsmatrix/`** (parent contains `scaffold/`):
 ```bash
 cp ../scaffold/.cursor/rules/follow-devscrolls-ui-foundation.mdc .cursor/rules/
 cp ../scaffold/.cursor/rules/agents-run-local-commands.mdc .cursor/rules/
+cp ../scaffold/.cursor/rules/commit-push-ship-worker-production.mdc .cursor/rules/
 cp ../scaffold/.cursor/rules/cloudflare-workers-builds-vcs-only.mdc .cursor/rules/
 cp ../scaffold/.cursor/rules/consult-design-md-for-branding.mdc .cursor/rules/
 cp ../scaffold/src/styles/app.css src/styles/
