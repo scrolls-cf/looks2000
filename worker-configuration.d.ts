@@ -5,14 +5,11 @@ interface CloudflareBindings {
   ASSETS: Fetcher
   CLOUDFLARE_ACCOUNT_ID: string
   ENVIRONMENT: string
-  GITHUB_SOURCE_OWNER: string
-  GITHUB_SOURCE_REPO: string
-  GITHUB_TARGET_ORG: string
   SCROLLSMATRIX_PUBLIC_URL: string
   SECRETS_STORE_ID: string
   BROWSER_RENDERING_PLAN: string
   BROWSER_RENDERING_ENABLED: string
-  BROWSER_USAGE?: KVNamespace
+  BROWSER_USAGE: KVNamespace
   CLOUDFLARE_API_TOKEN?: string
   devscrolls_scrollsmatrix_crypto_matrix_shared_secret?: SecretsStoreSecret
   devscrolls_repo_factory_operator_cloudflare_api_token?: SecretsStoreSecret

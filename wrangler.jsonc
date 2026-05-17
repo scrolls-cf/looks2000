@@ -14,27 +14,29 @@
   "vars": {
     "ENVIRONMENT": "development",
     "CLOUDFLARE_ACCOUNT_ID": "fc91bc5e5294c7fb716ee5e5be06380e",
-    "GITHUB_SOURCE_OWNER": "scrolls-cf",
-    "GITHUB_SOURCE_REPO": "scaffold",
-    "GITHUB_TARGET_ORG": "scrolls-cf",
     "SCROLLSMATRIX_PUBLIC_URL": "https://scrollsmatrix.jvalamis.workers.dev",
     "SECRETS_STORE_ID": "cf7f63f9d571485992997ffb96ec5075",
     "BROWSER_RENDERING_PLAN": "free",
     "BROWSER_RENDERING_ENABLED": "true"
   },
-  // Optional until deploy: wrangler kv namespace create BROWSER_USAGE (see docs/BROWSER-RENDERING-MCP.md)
-  // "kv_namespaces": [{ "binding": "BROWSER_USAGE", "id": "…", "preview_id": "…" }],
+  "kv_namespaces": [
+    {
+      "binding": "BROWSER_USAGE",
+      "id": "518906f78af5480e8da0fae86d8a22cd",
+      "preview_id": "43561e638f854a52a1fe6d25f32834e5"
+    }
+  ],
   "secrets_store_secrets": [
     {
       "binding": "devscrolls_scrollsmatrix_crypto_matrix_shared_secret",
       "store_id": "cf7f63f9d571485992997ffb96ec5075",
-      "secret_name": "devscrolls_scrollsmatrix_crypto_matrix_shared_secret",
+      "secret_name": "devscrolls_scrollsmatrix_crypto_matrix_shared_secret"
     },
     {
       "binding": "devscrolls_repo_factory_operator_cloudflare_api_token",
       "store_id": "cf7f63f9d571485992997ffb96ec5075",
-      "secret_name": "devscrolls_repo_factory_operator_cloudflare_api_token",
-    },
+      "secret_name": "devscrolls_repo_factory_operator_cloudflare_api_token"
+    }
   ],
   "observability": {
     "enabled": true

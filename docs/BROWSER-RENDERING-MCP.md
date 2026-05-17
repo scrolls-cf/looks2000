@@ -32,12 +32,14 @@ Check: `GET /health`, `GET /api/browser-budget`.
 
 ## KV setup (deploy)
 
+**`BROWSER_USAGE`** is bound in `wrangler.jsonc` (production + preview ids). To recreate on a new account:
+
 ```bash
 npx wrangler kv namespace create BROWSER_USAGE
 npx wrangler kv namespace create BROWSER_USAGE --preview
 ```
 
-Paste `id` / `preview_id` into `wrangler.jsonc` → `kv_namespaces`.
+Then paste `id` / `preview_id` into `kv_namespaces`.
 
 ## Compare with looks1999
 

@@ -19,7 +19,7 @@ This file does **not** duplicate those guides; it maps **this repo**.
 | Worker implementation | `src/index.ts` (Hono + ASSETS fallback on 404) |
 | Binding types | `npm run cf-typegen` → `CloudflareBindings` (after editing `wrangler.jsonc`) |
 | Static assets | `assets` block → `public/`, binding `ASSETS` |
-| Secrets / vars | **`[vars]`** in `wrangler.jsonc` for **non-secret** defaults (`ENVIRONMENT`, **`CLOUDFLARE_ACCOUNT_ID`**, fleet **`GITHUB_*`**, **`SCROLLSMATRIX_PUBLIC_URL`** — prod gateway `https://scrollsmatrix.jvalamis.workers.dev`, **`SECRETS_STORE_ID`**). Production secrets: **`wrangler secret put …`** or **`secrets_store_secrets`** when you add bindings ([Secrets](https://developers.cloudflare.com/workers/configuration/secrets/)). |
+| Secrets / vars | **`[vars]`** in `wrangler.jsonc` for **non-secret** defaults (`ENVIRONMENT`, **`CLOUDFLARE_ACCOUNT_ID`**, **`SCROLLSMATRIX_PUBLIC_URL`**, **`SECRETS_STORE_ID`**, **`BROWSER_RENDERING_*`**). **`kv_namespaces`**: **`BROWSER_USAGE`**. Production secrets: **`secrets_store_secrets`** ([Secrets](https://developers.cloudflare.com/workers/configuration/secrets/)). |
 
 ## Local env files (this package)
 

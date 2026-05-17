@@ -1,5 +1,5 @@
 /**
- * Browser (Puppeteer) content filter — drop layout/boilerplate, keep body copy.
+ * Browser Rendering content filter — drop layout/boilerplate, keep body copy.
  * Used by `rebuild-context-filter.ts` only (not phase-1 static crawl).
  */
 export const DROP_FOR_SITE_REBUILD_CONTEXT = {

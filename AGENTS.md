@@ -1,30 +1,28 @@
-# Agent notes (scaffold)
+# Agent map (looks2000)
 
-## Verify compile or dev server without blocking a human session
+**Role:** fleet site-analyze Worker — same phase-1 static crawl as **looks1999**; phase 2 uses **Cloudflare Browser Rendering** (MCP-equivalent REST API), not Puppeteer.
 
-Do **not** run `npm run dev` for a quick compile or “does it boot?” check. That starts a long-lived `wrangler dev` on the default port and ties up a terminal.
+## Start here
 
-Use the **agent-only** npm scripts instead. They exit when done and keep local I/O on a **reserved 10-port block** so they are less likely to collide with a developer’s normal `wrangler dev`.
+| Task | Read first |
+|------|------------|
+| Compare with looks1999 | [`docs/COMPARE-LOOKS1999.md`](./docs/COMPARE-LOOKS1999.md) |
+| Browser Rendering + KV budget | [`docs/BROWSER-RENDERING-MCP.md`](./docs/BROWSER-RENDERING-MCP.md) |
+| Deploy / Builds | [`docs/CLOUDFLARE-WORKERS-BUILDS.md`](./docs/CLOUDFLARE-WORKERS-BUILDS.md) |
+| Fleet UI rules | [`DESIGN.md`](./DESIGN.md) |
+
+## Verify (non-blocking)
+
+Do **not** use `npm run dev` for a quick health check — it holds a terminal. Use agent scripts:
 
 | Goal | Command |
 |------|---------|
-| CSS / static build only | `npm run agent:verify:build` |
-| Build + short-lived `wrangler dev` + `/health` probe + teardown checks | `npm run agent:verify:dev` |
+| CSS build | `npm run agent:verify:build` |
+| Build + short `wrangler dev` + `/health` | `npm run agent:verify:dev` |
 | Both | `npm run agent:verify` |
 
-### Port reservation
+Local secrets: copy `.env.example` → `.env` (matrix secret + operator Cloudflare API token with **Browser Rendering write**).
 
-`agent:verify:dev` uses **`SCAFFOLD_AGENT_VERIFY_PORT_MIN` / `SCAFFOLD_AGENT_VERIFY_PORT_MAX`**, default **`47910`–`47919`** (exactly ten ports). Humans should avoid binding services in that range locally.
+## Fleet access
 
-Optional tuning:
-
-- `SCAFFOLD_AGENT_VERIFY_STARTUP_MS` — wait for `/health` (default `60000`).
-- `SCAFFOLD_AGENT_VERIFY_RELEASE_MS` — wait for ports to free after kill (default `15000`).
-
-`agent:verify:dev` passes **`--env-file .env`** when that file exists; otherwise **`.env.example`** so automated checks can boot without copying secrets into `.env`.
-
-### What `agent:verify:dev` asserts
-
-After a successful `/health` response it sends **SIGTERM** to the **process group**, waits for exit, escalates to **SIGKILL** if needed, then checks that the chosen HTTP and inspector ports can be bound again and that the process group is gone (reduces orphaned `workerd` / `wrangler` risk).
-
-Implementation: `scripts/agent-verify-wrangler-dev.mjs`.
+Production UI: **scrollsmatrix** → `/apps/looks2000/`. Worker has **`workers_dev: false`** — no public `*.workers.dev`.

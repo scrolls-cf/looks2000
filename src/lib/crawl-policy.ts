@@ -9,10 +9,10 @@ export type CrawlBlocker = {
 }
 
 export type CrawlInfo = {
-  /** Whether the browser (Puppeteer) pass may run after static analyze. */
+  /** Whether the Browser Rendering phase-2 pass may run after static analyze. */
   browser: 'available' | 'blocked'
   blockers: CrawlBlocker[]
-  /** Static HTML had little copy; browser often helps (e.g. Wix). */
+  /** Static HTML had little copy; rendered fetch often helps (e.g. Wix). */
   suggest_browser: boolean
 }
 

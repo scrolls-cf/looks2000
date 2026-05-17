@@ -7,7 +7,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "start": "node src/index.js",
+    "start": "npm run dev",
     "build:css": "npx @tailwindcss/cli -i ./src/styles/app.css -o ./public/assets/app.css --minify",
     "build": "npm run build:css",
     "dev": "npm run build:css && wrangler dev --env-file .env",
