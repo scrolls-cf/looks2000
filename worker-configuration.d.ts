@@ -14,6 +14,7 @@ interface CloudflareBindings {
   BROWSER_RENDERING_ENABLED: string
   BROWSER_USAGE?: KVNamespace
   CLOUDFLARE_API_TOKEN?: string
+  devscrolls_scrollsmatrix_crypto_matrix_shared_secret?: SecretsStoreSecret
   devscrolls_repo_factory_operator_cloudflare_api_token?: SecretsStoreSecret
 }
 

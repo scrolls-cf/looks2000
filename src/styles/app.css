@@ -2,8 +2,7 @@
 @source "../../public/**/*.html";
 @plugin "@tailwindcss/typography";
 @source inline(
-  "prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-p:text-base-content/90",
-  "loading loading-spinner"
+  "prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-p:text-base-content/90"
 );
 @plugin "daisyui" {
   themes: false;
@@ -16,4 +15,4 @@
 
 
 @import "./components.css";
-@import "./product.css";
+

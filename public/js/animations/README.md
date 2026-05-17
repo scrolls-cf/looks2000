@@ -17,5 +17,6 @@ fadeUp(".hero-copy");
 | `stagger-in.mjs` | List/grid entrance |
 | `splash-exit.mjs` | Dismiss `[data-splash-layer]` |
 | `page-enter.mjs` | Hero + main timeline |
+| `stack-reorder.mjs` | FLIP resort when backlog vote order changes |
 
 All presets honor **`prefers-reduced-motion`**. Do not import from the Worker — see `docs/gsap-for-agents.md`.

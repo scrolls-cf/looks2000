@@ -1,0 +1,19 @@
+---
+description: Agents run local dev, migrate, and verify commands themselves — never tell the user to run them
+alwaysApply: true
+---
+
+# Agents run local commands (scaffold)
+
+When local setup or verification is needed (`npm run dev`, `npm run db:migrate:local`, builds, curls against localhost, etc.), **run it yourself** in the terminal. Do **not** end with “run this locally” or paste commands for the user to execute unless they explicitly asked for copy-paste instructions only.
+
+## Do
+
+- Start long-lived dev servers in the **background** when needed; use `curl` or project verify scripts to confirm behavior.
+- Report what you ran and what you observed (status codes, key fields, UI behavior).
+- Stop or note port conflicts if a server is already running on the expected port.
+
+## Do not
+
+- Delegate routine local verification to the user when you have shell access.
+- Block on the user running migrations or `npm run dev` before continuing work you can finish yourself.
