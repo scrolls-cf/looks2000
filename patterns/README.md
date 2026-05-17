@@ -20,6 +20,8 @@ This directory holds **short, durable notes for AI coding agents** working in th
 
 **Browser multi-step UI (`fetch`):** **[`goldpath/browser-async-chaining-multi-step-ui.md`](./goldpath/browser-async-chaining-multi-step-ui.md)**; avoid **[`errors/browser-single-fetch-fake-progress.md`](./errors/browser-single-fetch-fake-progress.md)**.
 
+**looks2000 phase 2 (Browser Rendering API / MCP backend):** **[`goldpath/browser-rendering-quick-actions-phase2.md`](./goldpath/browser-rendering-quick-actions-phase2.md)**; avoid **[`errors/browser-rendering-budget-exhausted.md`](./errors/browser-rendering-budget-exhausted.md)** — see **[`../docs/BROWSER-RENDERING-MCP.md`](../docs/BROWSER-RENDERING-MCP.md)**.
+
 **Scrollsmatrix (standalone repo, no `git merge`):** **[`goldpath/scrollsmatrix-fleet-design-sync.md`](./goldpath/scrollsmatrix-fleet-design-sync.md)**.
 
 **GitHub (new fleet repos):** default **public**; **scrollsmatrix** is the **private** exception — **[`goldpath/github-fleet-repo-visibility-default.md`](./goldpath/github-fleet-repo-visibility-default.md)**.

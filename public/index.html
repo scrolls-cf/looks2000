@@ -1,32 +1,81 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="devscrolls">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Devscrolls app (scaffold)" />
-    <title>Devscrolls</title>
-    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="/assets/app.css" />
-  </head>
-  <body class="bg-base-100 text-base-content antialiased">
-    <main
-      class="relative flex min-h-screen flex-col items-center justify-center gap-12 overflow-hidden px-6 py-20"
-    >
-      <div
-        class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,color-mix(in_oklab,var(--color-primary)_22%,transparent),transparent_55%)]"
-        aria-hidden="true"
-      ></div>
 
-      <div class="relative flex flex-col items-center gap-10">
-        <img
-          src="/assets/logo.svg"
-          alt="Devscrolls"
-          width="112"
-          height="112"
-          class="size-28 drop-shadow-lg sm:size-32"
-          decoding="async"
-        />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="looks2000 site context" />
+  <title>looks2000</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+
+<body class="bg-base-100 text-base-content antialiased">
+  <main class="relative flex min-h-screen flex-col items-center justify-center overflow-x-hidden px-4 py-10 sm:px-6"
+    aria-label="looks2000">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_-12%,color-mix(in_oklab,var(--color-primary)_18%,transparent),transparent_52%)]"
+      aria-hidden="true"></div>
+
+    <div
+      class="relative z-10 w-full max-w-lg rounded-2xl border border-base-content/10 bg-base-200/50 p-6 shadow-xl backdrop-blur-sm sm:p-8">
+      <div class="mb-6 flex items-center gap-3">
+        <img src="/assets/logo.svg" alt="" width="40" height="40" class="size-10 shrink-0" decoding="async" />
+        <p class="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-accent/85">
+          looks2000
+        </p>
       </div>
-    </main>
-  </body>
+
+      <div id="alert-error" class="alert alert-error mb-4 hidden text-sm" role="alert"></div>
+
+      <div
+        id="fetch-progress"
+        class="mb-4 hidden flex flex-col gap-3"
+        role="status"
+        aria-live="polite"
+        aria-label="fetch progress">
+        <progress
+          id="fetch-progress-bar"
+          class="progress progress-primary h-2 w-full"
+          value="0"
+          max="100"
+          aria-hidden="true"></progress>
+        <ol class="steps steps-horizontal w-full text-xs sm:text-sm">
+          <li id="progress-step-plan" class="step">site plan</li>
+          <li id="progress-step-content" class="step">content</li>
+        </ol>
+      </div>
+
+      <form id="analyze-form" class="flex flex-col gap-6" novalidate>
+        <div class="flex w-full flex-col gap-2">
+          <label for="field-site" class="text-sm font-medium text-base-content">site</label>
+          <input id="field-site" name="site" type="url" required maxlength="2048" autocomplete="off"
+            placeholder="https://example.com" class="input input-md w-full max-w-none"
+            aria-describedby="field-site-error" />
+          <p id="field-site-error" class="hidden text-sm text-error" role="alert"></p>
+        </div>
+
+        <div class="flex w-full flex-col gap-2">
+          <div class="flex items-center justify-between gap-2">
+            <label for="field-output" class="text-sm font-medium text-base-content">output</label>
+            <button type="button" id="btn-copy" class="btn btn-ghost btn-sm hidden" disabled>
+              copy
+            </button>
+          </div>
+          <div class="textarea textarea-md w-full min-w-0 max-w-none">
+            <pre id="field-output" class="summary-pre" aria-readonly="true" tabindex="0">Enter a site URL, then fetch (JSON).</pre>
+          </div>
+        </div>
+
+        <div id="submit-row" class="flex justify-end">
+          <button id="btn-submit" type="submit" class="btn btn-primary btn-md min-w-[7.5rem]" disabled>
+            fetch
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+  <script src="/assets/analyze.js" defer></script>
+</body>
+
 </html>

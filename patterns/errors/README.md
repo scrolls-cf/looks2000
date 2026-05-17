@@ -13,6 +13,7 @@ Append entries when you encounter **incorrect, fragile, or misleading code** in 
 | Sad path (`errors/`) | Gold path (`goldpath/`) |
 | --- | --- |
 | [`browser-single-fetch-fake-progress.md`](./browser-single-fetch-fake-progress.md) | [`browser-async-chaining-multi-step-ui.md`](../goldpath/browser-async-chaining-multi-step-ui.md) |
+| [`browser-rendering-budget-exhausted.md`](./browser-rendering-budget-exhausted.md) | [`browser-rendering-quick-actions-phase2.md`](../goldpath/browser-rendering-quick-actions-phase2.md) |
 
 ## Design and UI (DaisyUI + Tailwind + forms)
 

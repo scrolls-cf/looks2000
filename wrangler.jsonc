@@ -1,10 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "scaffold",
+  "name": "looks2000",
   "main": "src/index.ts",
   "compatibility_date": "2026-05-10",
   "workers_dev": false,
-  // Account Secrets Store UUID (not a secret). Use this value for `store_id` on each `secrets_store_secrets` entry — duplicated as `vars.SECRETS_STORE_ID` for templates / `c.env`.
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
@@ -18,37 +18,19 @@
     "GITHUB_TARGET_ORG": "scrolls-cf",
     "SCROLLSMATRIX_PUBLIC_URL": "https://scrollsmatrix.jvalamis.workers.dev",
     "SECRETS_STORE_ID": "cf7f63f9d571485992997ffb96ec5075",
+    "BROWSER_RENDERING_PLAN": "free",
+    "BROWSER_RENDERING_ENABLED": "true"
   },
+  // Optional until deploy: wrangler kv namespace create BROWSER_USAGE (see docs/BROWSER-RENDERING-MCP.md)
+  // "kv_namespaces": [{ "binding": "BROWSER_USAGE", "id": "…", "preview_id": "…" }],
+  "secrets_store_secrets": [
+    {
+      "binding": "devscrolls_repo_factory_operator_cloudflare_api_token",
+      "store_id": "cf7f63f9d571485992997ffb96ec5075",
+      "secret_name": "devscrolls_repo_factory_operator_cloudflare_api_token"
+    }
+  ],
   "observability": {
-    "enabled": true,
-  },
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
-  //   }
-  // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
-  // "ai": {
-  //   "binding": "AI"
-  // },
-  // "observability": {
-  //   "enabled": true,
-  //   "head_sampling_rate": 1
-  // }
+    "enabled": true
+  }
 }

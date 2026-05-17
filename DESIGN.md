@@ -75,6 +75,14 @@ Exact OKLCH values live in **`src/styles/app.css`** (`@plugin "daisyui/theme"` �
 - **Alerts / feedback:** `alert alert-info | warning | error` for strong block feedback; **`success`** stays a semantic token. For **inline success beside primary links** (e.g. repo-factory / scrollsmatrix gateway), use scoped **`#alert-success`** in `src/styles/app.css` instead of **`alert alert-success`** so **`primary`** links stay legible on a **base-** tinted surface.
 - **Gateway repo form:** Apps that embed **`#matrix-gateway-repo-form`** (and the field ids from `patterns/goldpath/daisyui-5-form-fields-markup.md`) inherit scoped field width, validation border/outline, and label error tint from the same CSS file.
 
+## looks2000 site fetch (this product)
+
+Same card UX as **looks1999** (scrollsmatrix gateway shell). Phase 1 identical; phase 2 uses **Browser Rendering content API** (same backend as [Cloudflare browser MCP](https://github.com/cloudflare/mcp-server-cloudflare/tree/main/apps/browser-rendering)) — see **`docs/BROWSER-RENDERING-MCP.md`**, **`docs/COMPARE-LOOKS1999.md`**.
+
+- **`POST /api/analyze`** → `handoff` + `summary`; `crawl.browser` blocked when daily/monthly rendering budget is exhausted.
+- **`POST /api/content`** → same `handoff.pages[]` shape as looks1999; KV tracks `X-Browser-Ms-Used`.
+- **`GET /api/browser-budget`** — remaining ms for current plan (`free` 10 min/day UTC, `paid` 10 h/month UTC).
+
 ## When to copy an external `DESIGN.md`
 
 Only when the **product owner** asks for a **different** aesthetic (another brand, white-label, or strict client guide). Then follow `docs/design-md-for-agents.md` and merge conflicts **explicitly**—do not silently fork the fleet palette.

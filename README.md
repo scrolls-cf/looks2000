@@ -1,23 +1,12 @@
-```txt
-npm install
+# looks2000
+
+Site analyze Worker — **looks1999** phase 1 + **Browser Rendering API** phase 2 (compare / budget-gated).
+
+```bash
+npm ci
 npm run dev
 ```
 
-**UI / branding:** Devscrolls fleet defaults live in **[`DESIGN.md`](./DESIGN.md)** (product rules for agents) and **`src/styles/app.css`** (`devscrolls` DaisyUI theme). Rebuild CSS after token edits: `npm run build:css`.
+Set **`CLOUDFLARE_API_TOKEN`** in `.env` (or fleet Secrets Store) with Browser Rendering write. Create KV namespaces and update `wrangler.jsonc` — see **`docs/BROWSER-RENDERING-MCP.md`**.
 
-```txt
-npm run deploy
-```
-
-[For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
-
-```txt
-npm run cf-typegen
-```
-
-Pass the `CloudflareBindings` as generics when instantiation `Hono`:
-
-```ts
-// src/index.ts
-const app = new Hono<{ Bindings: CloudflareBindings }>()
-```
+Compare with looks1999: **`docs/COMPARE-LOOKS1999.md`**.

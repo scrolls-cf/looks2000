@@ -1,0 +1,92 @@
+/**
+ * Browser (Puppeteer) content filter — drop layout/boilerplate, keep body copy.
+ * Used by `rebuild-context-filter.ts` only (not phase-1 static crawl).
+ */
+export const DROP_FOR_SITE_REBUILD_CONTEXT = {
+  /** Removed from HTML before parse (see filter: chrome tags kept on Wix/Squarespace/Webflow). */
+  tags: [
+    'script',
+    'style',
+    'noscript',
+    'svg',
+    'canvas',
+    'iframe',
+    'template',
+    'link',
+    'meta',
+    'nav',
+    'header',
+    'footer',
+    'aside',
+  ],
+
+  /** Matched on class/id/data-hook to strip whole blocks from HTML. */
+  junk_ui: [
+    'menus',
+    'breadcrumbs',
+    'pagination',
+    'sliders',
+    'carousels',
+    'popups',
+    'modals',
+    'cookie',
+    'newsletter',
+    'login',
+    'search_form',
+    'share',
+    'social_icon',
+    'map_embed',
+    'captcha',
+    'chat',
+    'announcement',
+  ],
+
+  /** Exact-match lowercase lines to drop from extracted text. */
+  generic_text: [
+    'home',
+    'menu',
+    'close',
+    'open',
+    'read more',
+    'learn more',
+    'click here',
+    'view more',
+    'previous',
+    'next',
+    'submit',
+    'search',
+    'follow us',
+    'share',
+    'privacy policy',
+    'terms and conditions',
+    'all rights reserved',
+    'powered by',
+    'website by',
+  ],
+
+  /** Substrings that mean extracted text is CSS/JS, not copy (no bare `{` / `}`). */
+  css_js_patterns: [
+    'rgba(',
+    'var(--',
+    '!important',
+    '@media',
+    '@font-face',
+    'font-family:',
+    'background:',
+    'padding:',
+    'margin:',
+    'display:',
+    'position:',
+    'function(',
+    'window.',
+    'document.',
+    'addEventListener',
+    '__NEXT_DATA__',
+    'webpack',
+    'base64,',
+    'data:image',
+    'viewBox',
+    'xmlns',
+    '#comp-',
+  ],
+} as const
