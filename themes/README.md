@@ -1,14 +1,12 @@
-# Fleet themes
+# Fleet palette
 
-Each file is one **`@plugin "daisyui/theme"`** block. Imported from **`src/styles/app.css`**.
+One DaisyUI theme: **`devscrolls`**. Set `data-theme="devscrolls"` on `<html>`. Components use **stock DaisyUI**; this file only supplies semantic colors.
 
-| Theme | Use when |
-|-------|----------|
-| **`devscrolls`** | Default fleet apps (dark). Set `data-theme="devscrolls"` on `<html>`. |
-| **`devscrolls-light`** | Marketing, docs, or explicit light shells. |
-| **`devscrolls-studio`** | Creative / design surfaces; slightly rounder, accent-forward. |
-| **`devscrolls-ink`** | Dense dashboards and internal tools. |
+| Role | Hex (reference) | Token |
+|------|-----------------|-------|
+| Canvas | `#242933` | `base-100` |
+| Cyan (gradient start) | `#89d3df` | `primary` |
+| Muted blue | `#68a0cf` | `secondary` |
+| Lavender (gradient end) | `#9d8df1` | `accent` |
 
-Runtime source of truth for OKLCH values is these files. **`DESIGN.md`** holds rules and hex reference swatches.
-
-Pick **one** theme per app shell unless the product spec requires switching.
+OKLCH in **`devscrolls.css`** is runtime truth. Splash markup: **`components/splash.html`**. Motion: **`src/animations/splash-exit.mjs`**.

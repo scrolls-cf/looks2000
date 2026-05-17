@@ -1,22 +1,28 @@
-# Fleet GSAP presets
+# Fleet GSAP — splash first
 
-Browser-only modules. Copy into app `public/js/animations/` or bundle from your client entry.
+Browser-only. Copy into `public/js/animations/` or import from your client bundle.
+
+## Splash dismiss
 
 ```js
-import { registerGsap, fadeUp, splashExit } from "./animations/index.mjs";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { registerGsap, splashExit, splashDismiss } from "./animations/index.mjs";
 
-registerGsap(ScrollTrigger);
-fadeUp(".hero-copy");
+registerGsap();
+const layer = document.querySelector("[data-splash-layer]");
+layer?.setAttribute("data-splash-active", "");
+
+// Generic fleet event:
+splashExit(layer);
+
+// scrollsmatrix gateway (same tween, existing event name):
+splashDismiss(layer);
 ```
 
-| Module | Purpose |
+| Export | Purpose |
 |--------|---------|
-| `register.mjs` | One-time `gsap.registerPlugin(...)` |
-| `fade-up.mjs` | Fade + rise |
-| `stagger-in.mjs` | List/grid entrance |
-| `splash-exit.mjs` | Dismiss `[data-splash-layer]` |
-| `page-enter.mjs` | Hero + main timeline |
-| `stack-reorder.mjs` | FLIP resort when backlog vote order changes |
+| `splashExit` | Fade out `[data-splash-layer]`; fires `scrollsdesigner:splash-dismissed` |
+| `splashDismiss` | Same; fires `scrollsmatrix:splash-dismissed` |
 
-All presets honor **`prefers-reduced-motion`**. Do not import from the Worker — see `docs/gsap-for-agents.md`.
+Markup: **`components/splash.html`**. Full breakout sequence lives in **scrollsmatrix** `public/assets/landing.js`.
+
+Other presets (`fadeUp`, `staggerIn`, …) remain for apps that import them; fleet CSS is palette + splash only.

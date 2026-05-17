@@ -31,20 +31,17 @@ This **`scrolls-cf/scrollsdesigner`** repo is the **source of truth** for fleet-
 2. **Sync** built CSS and docs into **`scaffold`** and apps per [`docs/sync-to-fleet.md`](./docs/sync-to-fleet.md) and [`patterns/goldpath/fleet-design-evolve-in-scrollsdesigner-first.md`](./patterns/goldpath/fleet-design-evolve-in-scrollsdesigner-first.md). **`scrollsmatrix`** is not a scaffold fork—copy per [`patterns/goldpath/scrollsmatrix-fleet-design-sync.md`](./patterns/goldpath/scrollsmatrix-fleet-design-sync.md).
 3. Optional external skills (**[design-md](https://officialskills.sh/google-labs-code/skills/design-md)**, **[frontend-design](https://officialskills.sh/anthropics/skills/frontend-design)**) are **technique only**—output must map onto fleet theme semantics unless the product owner opts out in writing.
 
-## Themes (pick one per app)
+## Palette (one fleet theme)
 
 | Theme | Role |
 |-------|------|
-| **`devscrolls`** | Default dark fleet shell |
-| **`devscrolls-light`** | Light marketing / docs |
-| **`devscrolls-studio`** | Creative tools, accent-forward |
-| **`devscrolls-ink`** | Dense dashboards |
+| **`devscrolls`** | Single dark palette from brand mark (#242933 canvas, cyan primary, violet accent) |
 
-Set **`data-theme="<name>"`** on `<html>`. Details: [`themes/README.md`](./themes/README.md).
+Set **`data-theme="devscrolls"`** on `<html>`. **Stock DaisyUI** components; scrollsdesigner supplies **semantic colors + splash** only. App-specific CSS: **`src/styles/product.css`**. Details: [`themes/README.md`](./themes/README.md).
 
 ## Non-negotiables (agents)
 
-1. **Theme:** root layout uses **`data-theme="devscrolls"`** (or another fleet theme from the table above) on `<html>`. Do not add casual theme switchers unless the product spec requires it.
+1. **Theme:** root layout uses **`data-theme="devscrolls"`** on `<html>`. Do not add theme switchers unless the product spec requires it.
 2. **Colors:** use **DaisyUI semantic colors** only (`primary`, `accent`, `base-*`, `neutral`, `info`, `success`, `warning`, `error`, and matching `*-content`). Do **not** use raw Tailwind palette classes for text or surfaces (`text-gray-*`, `bg-slate-*`, `text-blue-500`, etc.) except for **true** one-off debug or third-party embeds—and then isolate them.
 3. **Surfaces:** most of the page is **`base-100` / `base-200` / `base-300`**; use **`primary`** for the main CTA and key focus; use **`accent`** for secondary highlights, tags, or “interesting” affordances. Use **`neutral`** for dense tool chrome, not for marketing hero fills.
 4. **Typography:** **system UI stack** only unless a future revision of this file adds a webfont. Default body: `antialiased` on the shell; prefer **`text-base-content`** with opacity modifiers (`/70`, `/80`) over inventing new gray hex values.
@@ -65,9 +62,10 @@ Set **`data-theme="<name>"`** on `<html>`. Details: [`themes/README.md`](./theme
 
 | Role | Hex (reference) | Semantic token |
 |------|-----------------|----------------|
-| Brand gradient A (cyan) | `#7dd3fc` | maps to **`primary`** family |
-| Brand gradient B (violet) | `#a78bfa` | maps to **`accent`** family |
-| Canvas (dark) | derived from dim-like cool neutrals | **`base-100` … `base-content`** |
+| Brand gradient A (cyan) | `#89d3df` | **`primary`** |
+| Brand mid (blue) | `#68a0cf` | **`secondary`** |
+| Brand gradient B (violet) | `#9d8df1` | **`accent`** |
+| Canvas (dark) | `#242933` | **`base-100` … `base-content`** |
 
 Exact OKLCH values live in **`themes/*.css`**. **Those files are the runtime source of truth**; update this table’s hex column when marketing needs a swatch card, but change tokens in `themes/` first.
 
@@ -85,8 +83,8 @@ Exact OKLCH values live in **`themes/*.css`**. **Those files are the runtime sou
 - **Secondary action:** `btn btn-outline` or `btn btn-ghost` on `base-100`/`base-200`.
 - **Destructive:** `btn btn-error` (never `btn-primary` for delete).
 - **Surfaces:** `card bg-base-200` or `bg-base-100` with `border border-base-300` when separation helps.
-- **Alerts / feedback:** `alert alert-info | warning | error` for strong block feedback; **`success`** stays a semantic token. For **inline success beside primary links** (e.g. repo-factory / scrollsmatrix gateway), use scoped **`#alert-success`** in `src/styles/app.css` instead of **`alert alert-success`** so **`primary`** links stay legible on a **base-** tinted surface.
-- **Gateway repo form:** Apps that embed **`#matrix-gateway-repo-form`** (and the field ids from `patterns/goldpath/daisyui-5-form-fields-markup.md`) inherit scoped field width, validation border/outline, and label error tint from the same CSS file.
+- **Alerts / feedback:** default **`alert alert-*`** from DaisyUI. Gateway/repo-factory success strips live in each app’s **`product.css`** (`#alert-success`), not fleet `components.css`.
+- **Gateway repo form:** validation/width overrides belong in the app’s **`product.css`** when it embeds **`#matrix-gateway-repo-form`**.
 
 ## When to copy an external `DESIGN.md`
 
@@ -96,4 +94,4 @@ Only when the **product owner** asks for a **different** aesthetic (another bran
 
 Tweaks to the fleet look belong here and in `src/styles/app.css` together; bump a short note at the bottom when you change tokens.
 
-_Changelog: 2026-05-16 — **scrollsdesigner** owns fleet design (themes/, animations/, components/); four fleet themes; sync via `docs/sync-to-fleet.md`. 2026-05-16 — **Where fleet rules change** #2: **scrollsmatrix** is not a scaffold Git fork; manual sync goldpath linked. 2026-05-15 — Non-negotiable **#11** (no modals / browser `confirm` unless requested; DaisyUI `alert` banners unchanged); **#9** lowercase tool labels; **Components** gateway **`#alert-success`** + **`#matrix-gateway-repo-form`**. 2026-05-14 — `patterns/errors/README.md`: sad-path ↔ gold-path tables (design + GSAP); cross-links in `daisyui.md`, `daisyui-tailwind-v4-config.md`, `design-md-for-agents.md`, `patterns/README.md`. 2026-05-14 — Non-negotiable **#10** expanded: ordered stack (Daisy → Tailwind → tokens → scoped CSS); form goldpath + textarea UX errors linked. 2026-05-14 — Initial Devscrolls foundation. 2026-05-14 — Brand personality pillars; scaffold-first fleet evolution; brand/UX agent ownership inside rails. 2026-05-14 — Agent guide + patterns index: scrollsmatrix manual-sync pointer. 2026-05-14 — Non-negotiable #9: terse tool microcopy. 2026-05-14 — Non-negotiable #10 + goldpath: minimal drift from DaisyUI + Tailwind (reuse components/utilities; scoped overrides only)._
+_Changelog: 2026-05-17 — Single **`devscrolls`** palette (screenshot brand); removed multi-theme set; fleet **`components.css`** = splash only; form/gateway overrides → app **`product.css`**. 2026-05-16 — **scrollsdesigner** owns fleet design (themes/, animations/, components/); four fleet themes; sync via `docs/sync-to-fleet.md`. 2026-05-16 — **Where fleet rules change** #2: **scrollsmatrix** is not a scaffold Git fork; manual sync goldpath linked. 2026-05-15 — Non-negotiable **#11** (no modals / browser `confirm` unless requested; DaisyUI `alert` banners unchanged); **#9** lowercase tool labels; **Components** gateway **`#alert-success`** + **`#matrix-gateway-repo-form`**. 2026-05-14 — `patterns/errors/README.md`: sad-path ↔ gold-path tables (design + GSAP); cross-links in `daisyui.md`, `daisyui-tailwind-v4-config.md`, `design-md-for-agents.md`, `patterns/README.md`. 2026-05-14 — Non-negotiable **#10** expanded: ordered stack (Daisy → Tailwind → tokens → scoped CSS); form goldpath + textarea UX errors linked. 2026-05-14 — Initial Devscrolls foundation. 2026-05-14 — Brand personality pillars; scaffold-first fleet evolution; brand/UX agent ownership inside rails. 2026-05-14 — Agent guide + patterns index: scrollsmatrix manual-sync pointer. 2026-05-14 — Non-negotiable #9: terse tool microcopy. 2026-05-14 — Non-negotiable #10 + goldpath: minimal drift from DaisyUI + Tailwind (reuse components/utilities; scoped overrides only)._
