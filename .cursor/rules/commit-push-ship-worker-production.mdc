@@ -1,0 +1,38 @@
+---
+description: After commit and push on a Worker repo, verify or trigger production deploy so built CSS/assets reach prod
+alwaysApply: true
+---
+
+# Commit + push must ship Worker production (scaffold)
+
+**Local `npm run build:css` (or `npm run build`) is not enough for production.** Browsers behind scrollsmatrix or `*.workers.dev` only get updated CSS/assets after the Worker is **deployed** with a fresh build — usually **Workers Builds** on `git push`, or an explicit **`npm run deploy`** when Builds is not wired.
+
+## When this applies
+
+After you **commit and push** (or the user asked you to ship) changes that affect the deployed bundle, including:
+
+- `src/styles/**`, `public/assets/app.css`, Tailwind/DaisyUI sources, `public/` static assets
+- `package.json` scripts that change how CSS is built
+- Wrangler config that changes assets or bindings needed at runtime
+
+## Do (same session — do not stop at push)
+
+1. **Before push:** run **`npm run build:css`** / **`npm run build`** in the package so committed artifacts match sources when the repo tracks built CSS.
+2. **Push** to the branch Workers Builds watches (fleet default: **`master`**).
+3. **Production path (pick what fits the repo):**
+   - **Workers Builds wired** — confirm a build ran for that push (dashboard or Builds API). If triggers are empty or stale, wire or kick a build per [`patterns/goldpath/workers-builds-ci-deploy-command.md`](../../patterns/goldpath/workers-builds-ci-deploy-command.md) and scrollsmatrix [`docs/cf-runbook.md`](../../scrollsmatrix/docs/cf-runbook.md) Task **C** when you have operator access.
+   - **No Builds yet / first ship** — run **`npm ci && npm run deploy`** from the package (loads `.env` per [`scaffold-env-dotenv-only.mdc`](./scaffold-env-dotenv-only.mdc)), then complete Builds wiring so **future** pushes auto-deploy.
+4. **Report** what you pushed and whether production was updated (build id, deploy success, or blocker).
+5. **D1 schema:** if **`migrations/`** changed, run **`npm run db:migrate:remote`** in the same session — Builds does not apply migrations ([`d1-remote-migrate-when-shipping-schema.mdc`](./d1-remote-migrate-when-shipping-schema.mdc)).
+
+## Do not
+
+- End with “pushed — production will update” without checking Builds or running deploy when shipping was the goal.
+- Assume local wrangler dev serves production users.
+- Add git-host CI for Worker deploy; fleet uses **Cloudflare Workers Builds** — see [`cloudflare-workers-builds-vcs-only.mdc`](./cloudflare-workers-builds-vcs-only.mdc).
+
+## References
+
+- [`patterns/goldpath/github-vcs-cloudflare-builds.md`](../../patterns/goldpath/github-vcs-cloudflare-builds.md)
+- [`patterns/goldpath/workers-builds-ci-deploy-command.md`](../../patterns/goldpath/workers-builds-ci-deploy-command.md)
+- Scrollsmatrix registry: [`scrollsmatrix/docs/fleet-workers-builds.md`](../../scrollsmatrix/docs/fleet-workers-builds.md) (sibling checkout)
