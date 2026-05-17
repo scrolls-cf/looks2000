@@ -72,4 +72,25 @@
   #alert-success a:hover {
     text-decoration-color: var(--color-primary);
   }
+
+  /* job-stack: vote cluster density + row focus ring without layout shift */
+  .job-stack-vote {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    padding-top: 0.125rem;
+  }
+
+  .job-stack-row[aria-selected="true"] {
+    border-left-color: var(--color-primary);
+  }
+
+  #jobs-form .input:where(input),
+  #jobs-form .textarea,
+  #jobs-form .select {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
 }
