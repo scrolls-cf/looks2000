@@ -1,0 +1,33 @@
+/* Dense tools — higher contrast, minimal depth */
+@plugin "daisyui/theme" {
+  name: "devscrolls-ink";
+  color-scheme: dark;
+  --color-base-100: oklch(22% 0.015 264);
+  --color-base-200: oklch(19% 0.012 264);
+  --color-base-300: oklch(16% 0.01 264);
+  --color-base-content: oklch(92% 0.02 222);
+  --color-primary: oklch(80% 0.11 210);
+  --color-primary-content: oklch(14% 0.04 210);
+  --color-secondary: oklch(45% 0.05 264);
+  --color-secondary-content: oklch(94% 0.02 264);
+  --color-accent: oklch(74% 0.13 285);
+  --color-accent-content: oklch(98% 0.01 285);
+  --color-neutral: oklch(18% 0.015 264);
+  --color-neutral-content: oklch(90% 0.025 222);
+  --color-info: oklch(76% 0.11 220);
+  --color-info-content: oklch(14% 0.04 220);
+  --color-success: oklch(70% 0.13 155);
+  --color-success-content: oklch(14% 0.04 155);
+  --color-warning: oklch(78% 0.14 85);
+  --color-warning-content: oklch(18% 0.05 85);
+  --color-error: oklch(62% 0.17 25);
+  --color-error-content: oklch(98% 0.02 25);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.375rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.2rem;
+  --size-field: 0.2rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}

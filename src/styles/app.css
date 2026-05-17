@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @source "../../public/**/*.html";
 @plugin "@tailwindcss/typography";
-/* prose: register literals used in public HTML so the CLI emits them (see .cursor/rules/tailwind-typography-prose.mdc) */
 @source inline(
   "prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-p:text-base-content/90",
   "loading loading-spinner"
@@ -9,78 +8,12 @@
 @plugin "daisyui" {
   themes: false;
 }
-@plugin "daisyui/theme" {
-  name: "devscrolls";
-  default: true;
-  prefersdark: true;
-  color-scheme: dark;
-  --color-base-100: oklch(30.857% 0.023 264.149);
-  --color-base-200: oklch(28.036% 0.019 264.182);
-  --color-base-300: oklch(26.346% 0.018 262.177);
-  --color-base-content: oklch(82.901% 0.031 222.959);
-  --color-primary: oklch(78% 0.11 210);
-  --color-primary-content: oklch(18% 0.04 210);
-  --color-secondary: oklch(52% 0.06 264);
-  --color-secondary-content: oklch(92% 0.02 264);
-  --color-accent: oklch(72% 0.14 285);
-  --color-accent-content: oklch(98% 0.01 285);
-  --color-neutral: oklch(24.731% 0.02 264.094);
-  --color-neutral-content: oklch(82.901% 0.031 222.959);
-  --color-info: oklch(78% 0.12 220);
-  --color-info-content: oklch(18% 0.04 220);
-  --color-success: oklch(72% 0.14 155);
-  --color-success-content: oklch(16% 0.04 155);
-  --color-warning: oklch(82% 0.15 85);
-  --color-warning-content: oklch(22% 0.05 85);
-  --color-error: oklch(65% 0.18 25);
-  --color-error-content: oklch(98% 0.02 25);
-  --radius-selector: 1rem;
-  --radius-field: 0.5rem;
-  --radius-box: 1rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --border: 1px;
-  --depth: 0;
-  --noise: 0;
-}
 
-@layer components {
-  #analyze-form .input:where(input),
-  #analyze-form .textarea {
-    width: 100%;
-    min-width: 0;
-    max-width: none;
-  }
+@import "../../themes/devscrolls.css";
+@import "../../themes/devscrolls-light.css";
+@import "../../themes/devscrolls-studio.css";
+@import "../../themes/devscrolls-ink.css";
 
-  #analyze-form .textarea .summary-pre {
-    margin: 0;
-    min-height: 12rem;
-    max-height: 24rem;
-    overflow: auto;
-    white-space: pre-wrap;
-    word-break: break-word;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.75rem;
-    line-height: 1.45;
-    color: color-mix(in oklab, var(--color-base-content) 88%, transparent);
-  }
 
-  #analyze-form input.input[aria-invalid="true"],
-  #analyze-form input.input[aria-invalid="true"]:focus,
-  #analyze-form input.input[aria-invalid="true"]:focus-within {
-    --input-color: var(--color-error);
-  }
-
-  #analyze-form label[for="field-site"]:has(+ input.input[aria-invalid="true"]) {
-    color: var(--color-error);
-  }
-
-  #fetch-progress .steps {
-    width: 100%;
-  }
-
-  #fetch-progress .fetch-step-current {
-    color: color-mix(in oklab, var(--color-base-content) 72%, transparent);
-    font-weight: 500;
-  }
-}
+@import "./components.css";
+@import "./product.css";

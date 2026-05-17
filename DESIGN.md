@@ -1,11 +1,13 @@
-# Devscrolls UI foundation (scaffold)
+> **Synced from scrollsdesigner.** Canonical edits: `scrolls-cf/scrollsdesigner` → `npm run sync:fleet`. Product CSS: `src/styles/product.css` in this repo.
 
-**Audience:** coding agents and humans shipping apps from this scaffold.  
-**Status:** canonical house style for the Devscrolls fleet unless a product owner explicitly opts out in writing.
+# Devscrolls UI foundation (looks2000)
+
+**Audience:** coding agents and humans shipping any Devscrolls fleet app.  
+**Status:** canonical house style unless a product owner explicitly opts out in writing.
 
 ## Intent
 
-Ship **predictable, on-brand UI** so builders focus on behavior and data, not one-off palettes or arbitrary Tailwind color picks. Implement with **DaisyUI components + semantic tokens** wired by the **`devscrolls`** theme in `src/styles/app.css`. **Stay close to DaisyUI and Tailwind defaults**—reuse component APIs and layout utilities; add custom CSS only when necessary, scoped, and documented.
+Ship **predictable, on-brand UI** so builders focus on behavior and data, not one-off palettes or arbitrary Tailwind color picks. Implement with **DaisyUI components + semantic tokens** from **`themes/`** (built via `src/styles/app.css`). **Stay close to DaisyUI and Tailwind defaults**—reuse component APIs and layout utilities; add custom CSS only when necessary, scoped, and documented.
 
 ## Brand personality (Devscrolls)
 
@@ -21,23 +23,34 @@ Voice the product through layout and motion, not through random color picks. Def
 
 Agents with **brand / marketing / UX-UI** skills own **execution inside these rails** (story, emphasis, flow, microcopy tone). They do **not** invent a parallel brand system per app.
 
-## Where fleet rules change (scaffold first)
+## Where fleet rules change (scrollsdesigner first)
 
-This **`scrolls-cf/scaffold`** repo is the **source of truth** for fleet-wide look: **`DESIGN.md`**, **`src/styles/app.css`**, and shared **`.cursor/rules`** that point here.
+This **`scrolls-cf/scrollsdesigner`** repo is the **source of truth** for fleet-wide look: **`DESIGN.md`**, **`themes/`**, **`src/styles/`**, **`src/animations/`**, **`components/`**.
 
-1. **Edit scaffold** (tokens, non-negotiables, new global patterns), **`npm run build:css`** when `src/styles/app.css` changes, commit, **`git push origin master`**.
-2. **Merge into each repo that was forked from scaffold** (for example `jobs`, `repo-factory`, `looks1999`) on a schedule you choose; resolve conflicts by keeping **product-specific** surfaces in that repo and **fleet tokens + docs** from scaffold. **`scrollsmatrix`** is **not** forked from scaffold (separate gateway product); keep it fleet-aligned by **copying** files per [`patterns/goldpath/scrollsmatrix-fleet-design-sync.md`](./patterns/goldpath/scrollsmatrix-fleet-design-sync.md), not `git merge`.
-3. Optional: use external skills (e.g. **[design-md](https://officialskills.sh/google-labs-code/skills/design-md)**, **[frontend-design](https://officialskills.sh/anthropics/skills/frontend-design)**) as **technique**—output must still map onto **`devscrolls`** semantics unless the product owner opts out in writing.
+1. **Edit scrollsdesigner** (tokens, themes, non-negotiables, global patterns), **`npm run build:css`**, commit, push.
+2. **Sync** built CSS and docs into **`scaffold`** and apps per [`docs/sync-to-fleet.md`](./docs/sync-to-fleet.md) and [`patterns/goldpath/fleet-design-evolve-in-scrollsdesigner-first.md`](./patterns/goldpath/fleet-design-evolve-in-scrollsdesigner-first.md). **`scrollsmatrix`** is not a scaffold fork—copy per [`patterns/goldpath/scrollsmatrix-fleet-design-sync.md`](./patterns/goldpath/scrollsmatrix-fleet-design-sync.md).
+3. Optional external skills (**[design-md](https://officialskills.sh/google-labs-code/skills/design-md)**, **[frontend-design](https://officialskills.sh/anthropics/skills/frontend-design)**) are **technique only**—output must map onto fleet theme semantics unless the product owner opts out in writing.
+
+## Themes (pick one per app)
+
+| Theme | Role |
+|-------|------|
+| **`devscrolls`** | Default dark fleet shell |
+| **`devscrolls-light`** | Light marketing / docs |
+| **`devscrolls-studio`** | Creative tools, accent-forward |
+| **`devscrolls-ink`** | Dense dashboards |
+
+Set **`data-theme="<name>"`** on `<html>`. Details: [`themes/README.md`](./themes/README.md).
 
 ## Non-negotiables (agents)
 
-1. **Theme:** root layout uses **`data-theme="devscrolls"`** on `<html>` (or the outer app shell). Do not add casual theme switchers unless the product spec requires it.
+1. **Theme:** root layout uses **`data-theme="devscrolls"`** (or another fleet theme from the table above) on `<html>`. Do not add casual theme switchers unless the product spec requires it.
 2. **Colors:** use **DaisyUI semantic colors** only (`primary`, `accent`, `base-*`, `neutral`, `info`, `success`, `warning`, `error`, and matching `*-content`). Do **not** use raw Tailwind palette classes for text or surfaces (`text-gray-*`, `bg-slate-*`, `text-blue-500`, etc.) except for **true** one-off debug or third-party embeds—and then isolate them.
 3. **Surfaces:** most of the page is **`base-100` / `base-200` / `base-300`**; use **`primary`** for the main CTA and key focus; use **`accent`** for secondary highlights, tags, or “interesting” affordances. Use **`neutral`** for dense tool chrome, not for marketing hero fills.
 4. **Typography:** **system UI stack** only unless a future revision of this file adds a webfont. Default body: `antialiased` on the shell; prefer **`text-base-content`** with opacity modifiers (`/70`, `/80`) over inventing new gray hex values.
 5. **Density:** default to **comfortable** spacing (`gap-4`–`gap-8` in page sections, `p-4`–`p-6` on cards). Avoid ultra-tight `gap-1` layouts for primary flows.
 6. **Radius:** theme sets rounded selectors and boxes; do not fight it with ad-hoc `rounded-sm` on Daisy components unless fixing a clash—prefer component defaults.
-7. **Motion:** follow `docs/gsap-for-agents.md` and `patterns/goldpath/gsap-prefer-transforms.md`. No layout-thrashing animations on `width`/`height`/`top`/`left`.
+7. **Motion:** use presets in **`src/animations/`** when possible; otherwise follow `docs/gsap-for-agents.md` and `patterns/goldpath/gsap-prefer-transforms.md`. No layout-thrashing animations on `width`/`height`/`top`/`left`.
 8. **Content:** use **`prose prose-invert`** only where long-form markdown lives; keep app chrome outside `prose`.
 9. **Tool surfaces (microcopy):** internal Workers, dashboards, and **repo-factory-style** flows default to **literal, efficient labels** (`name`, `description`, `submit`)—**not** conversational onboarding, long “first slice” disclaimers, or hint paragraphs under fields. **Field labels and control chrome** (not page/section titles) stay **lowercase** unless a proper noun or acronym requires otherwise. Ship **only** what the task needs; add prose when the **product spec** asks for marketing or education. **Accessibility** still requires real `<label>` / `aria-*` / errors—not filler copy.
 10. **DaisyUI + Tailwind alignment (priority order — do not invert):**
@@ -56,7 +69,7 @@ This **`scrolls-cf/scaffold`** repo is the **source of truth** for fleet-wide lo
 | Brand gradient B (violet) | `#a78bfa` | maps to **`accent`** family |
 | Canvas (dark) | derived from dim-like cool neutrals | **`base-100` … `base-content`** |
 
-Exact OKLCH values live in **`src/styles/app.css`** (`@plugin "daisyui/theme"` → `devscrolls`). **That file is the runtime source of truth**; update this table’s hex column when marketing needs a swatch card, but change tokens in CSS first.
+Exact OKLCH values live in **`themes/*.css`**. **Those files are the runtime source of truth**; update this table’s hex column when marketing needs a swatch card, but change tokens in `themes/` first.
 
 ## Typography scale (logical)
 
@@ -75,14 +88,6 @@ Exact OKLCH values live in **`src/styles/app.css`** (`@plugin "daisyui/theme"` �
 - **Alerts / feedback:** `alert alert-info | warning | error` for strong block feedback; **`success`** stays a semantic token. For **inline success beside primary links** (e.g. repo-factory / scrollsmatrix gateway), use scoped **`#alert-success`** in `src/styles/app.css` instead of **`alert alert-success`** so **`primary`** links stay legible on a **base-** tinted surface.
 - **Gateway repo form:** Apps that embed **`#matrix-gateway-repo-form`** (and the field ids from `patterns/goldpath/daisyui-5-form-fields-markup.md`) inherit scoped field width, validation border/outline, and label error tint from the same CSS file.
 
-## looks2000 site fetch (this product)
-
-Same card UX as **looks1999** (scrollsmatrix gateway shell). Phase 1 identical; phase 2 uses **Browser Rendering content API** (same backend as [Cloudflare browser MCP](https://github.com/cloudflare/mcp-server-cloudflare/tree/main/apps/browser-rendering)) — see **`docs/BROWSER-RENDERING-MCP.md`**, **`docs/COMPARE-LOOKS1999.md`**.
-
-- **`POST /api/analyze`** → `handoff` + `summary`; `crawl.browser` blocked when daily/monthly rendering budget is exhausted.
-- **`POST /api/content`** → same `handoff.pages[]` shape as looks1999; KV tracks `X-Browser-Ms-Used`.
-- **`GET /api/browser-budget`** — remaining ms for current plan (`free` 10 min/day UTC, `paid` 10 h/month UTC).
-
 ## When to copy an external `DESIGN.md`
 
 Only when the **product owner** asks for a **different** aesthetic (another brand, white-label, or strict client guide). Then follow `docs/design-md-for-agents.md` and merge conflicts **explicitly**—do not silently fork the fleet palette.
@@ -91,4 +96,4 @@ Only when the **product owner** asks for a **different** aesthetic (another bran
 
 Tweaks to the fleet look belong here and in `src/styles/app.css` together; bump a short note at the bottom when you change tokens.
 
-_Changelog: 2026-05-16 — **Where fleet rules change** #2: **scrollsmatrix** is not a scaffold Git fork; manual sync goldpath linked. 2026-05-15 — Non-negotiable **#11** (no modals / browser `confirm` unless requested; DaisyUI `alert` banners unchanged); **#9** lowercase tool labels; **Components** gateway **`#alert-success`** + **`#matrix-gateway-repo-form`**. 2026-05-14 — `patterns/errors/README.md`: sad-path ↔ gold-path tables (design + GSAP); cross-links in `daisyui.md`, `daisyui-tailwind-v4-config.md`, `design-md-for-agents.md`, `patterns/README.md`. 2026-05-14 — Non-negotiable **#10** expanded: ordered stack (Daisy → Tailwind → tokens → scoped CSS); form goldpath + textarea UX errors linked. 2026-05-14 — Initial Devscrolls foundation. 2026-05-14 — Brand personality pillars; scaffold-first fleet evolution; brand/UX agent ownership inside rails. 2026-05-14 — Agent guide + patterns index: scrollsmatrix manual-sync pointer. 2026-05-14 — Non-negotiable #9: terse tool microcopy. 2026-05-14 — Non-negotiable #10 + goldpath: minimal drift from DaisyUI + Tailwind (reuse components/utilities; scoped overrides only)._
+_Changelog: 2026-05-16 — **scrollsdesigner** owns fleet design (themes/, animations/, components/); four fleet themes; sync via `docs/sync-to-fleet.md`. 2026-05-16 — **Where fleet rules change** #2: **scrollsmatrix** is not a scaffold Git fork; manual sync goldpath linked. 2026-05-15 — Non-negotiable **#11** (no modals / browser `confirm` unless requested; DaisyUI `alert` banners unchanged); **#9** lowercase tool labels; **Components** gateway **`#alert-success`** + **`#matrix-gateway-repo-form`**. 2026-05-14 — `patterns/errors/README.md`: sad-path ↔ gold-path tables (design + GSAP); cross-links in `daisyui.md`, `daisyui-tailwind-v4-config.md`, `design-md-for-agents.md`, `patterns/README.md`. 2026-05-14 — Non-negotiable **#10** expanded: ordered stack (Daisy → Tailwind → tokens → scoped CSS); form goldpath + textarea UX errors linked. 2026-05-14 — Initial Devscrolls foundation. 2026-05-14 — Brand personality pillars; scaffold-first fleet evolution; brand/UX agent ownership inside rails. 2026-05-14 — Agent guide + patterns index: scrollsmatrix manual-sync pointer. 2026-05-14 — Non-negotiable #9: terse tool microcopy. 2026-05-14 — Non-negotiable #10 + goldpath: minimal drift from DaisyUI + Tailwind (reuse components/utilities; scoped overrides only)._
