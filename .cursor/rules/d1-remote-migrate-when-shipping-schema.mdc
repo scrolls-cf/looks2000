@@ -1,0 +1,40 @@
+---
+description: When D1 migrations change, agents run db:migrate:remote in the same session — Workers Builds does not
+alwaysApply: true
+---
+
+# D1 remote migrations when shipping schema (scaffold / fleet Workers)
+
+**[Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/) does not run `wrangler d1 migrations apply`.** A successful **`git push`** / auto-deploy updates the Worker script and assets only. If you added or changed SQL under **`migrations/`**, production D1 stays on the old schema until something applies those files to the **remote** database.
+
+## When this applies
+
+- You **add, edit, or reorder** files in **`migrations/`** (or change Wrangler D1 binding / database name used for migrations).
+- You **ship** backlog, auth, or any feature that **depends** on new tables, columns, or indexes in production D1.
+- The user asks to deploy a Worker that uses **D1** and schema changed in the same work.
+
+If the package has **no** `migrations/` directory and **no** `db:migrate:remote` script, skip this rule.
+
+## Do (same session — do not stop at push or “Build succeeded”)
+
+1. **Local dev:** run **`npm run db:migrate:local`** (or the package’s equivalent) so **`wrangler dev`** matches the new schema before you rely on local behavior.
+2. **Before or after production deploy** (order: migrate **before** deploy if the new Worker code **requires** the new schema; migrate **after** deploy is OK only when old code tolerates the new schema):
+   - From the **Worker package root** (e.g. **`jobs/`**), with fleet env loaded per [`scaffold-env-dotenv-only.mdc`](./scaffold-env-dotenv-only.mdc) and [`agents-run-local-commands.mdc`](./agents-run-local-commands.mdc):
+   - **`npm run db:migrate:remote`**
+   - If the script is missing, run the equivalent from **`package.json`** (fleet default: **`wrangler d1 migrations apply <database_name> --remote`**).
+3. Load **`CLOUDFLARE_API_TOKEN`** for Wrangler (from the package **`.env`** or **`scrollsmatrix/.env`** via **`devscrolls_repo_factory_operator_cloudflare_api_token`** / [`scrollsmatrix/src/load-env.js`](../../scrollsmatrix/src/load-env.js) when developing a sibling fork). **Run the command yourself** — do not tell the user to migrate by hand unless you lack credentials.
+4. **Report** which migration files applied and that remote D1 was updated (or the exact Wrangler error).
+
+Pair with [`commit-push-ship-worker-production.mdc`](./commit-push-ship-worker-production.mdc): push/deploy does **not** replace this step.
+
+## Do not
+
+- Assume Workers Builds or **`npm run deploy`** applied migrations.
+- Ship breaking schema changes without applying remote migrations when production still serves traffic.
+- Add GitHub Actions or CI jobs to run D1 migrations; fleet deploy path is **Workers Builds + agent-run remote migrate** when needed.
+
+## References
+
+- Package scripts: **`db:migrate:local`** / **`db:migrate:remote`** in **`package.json`**
+- [`patterns/goldpath/workers-builds-ci-deploy-command.md`](../../patterns/goldpath/workers-builds-ci-deploy-command.md)
+- Scrollsmatrix runbook: [`scrollsmatrix/docs/cf-runbook.md`](../../scrollsmatrix/docs/cf-runbook.md) (sibling checkout)
