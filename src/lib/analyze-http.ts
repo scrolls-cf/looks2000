@@ -1,8 +1,8 @@
-export const corsAnalyzeHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-} as const
+import { corsHeadersForRequest } from './fleet-gateway/cors'
+
+export function corsAnalyzeHeaders(request: Request): Record<string, string> {
+  return corsHeadersForRequest(request)
+}
 
 export type ParseAnalyzeBodyResult =
   | { ok: true; site: string }

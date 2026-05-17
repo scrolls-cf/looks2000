@@ -9,10 +9,15 @@ import {
 } from './lib/analyze-http'
 import { respondSitePlanJson } from './lib/site-plan-handler'
 import { respondContentJson } from './lib/content-handler'
+import { requireFleetGateway } from './lib/fleet-gateway/require-fleet-gateway'
 
 const app = new Hono<{ Bindings: CloudflareBindings }>()
 
-const cors = corsAnalyzeHeaders
+app.use('*', async (c, next) => {
+  const blocked = await requireFleetGateway(c.req.raw, c.env)
+  if (blocked) return blocked
+  await next()
+})
 
 app.get('/health', async (c) => {
   const budget = await readBrowserBudgetStatus(c.env)
@@ -25,30 +30,38 @@ app.get('/health', async (c) => {
   })
 })
 
-app.options('/api/browser-budget', (c) => c.body(null, 204, cors))
+app.options('/api/browser-budget', (c) => c.body(null, 204, corsAnalyzeHeaders(c.req.raw)))
 app.get('/api/browser-budget', async (c) => {
   const budget = await readBrowserBudgetStatus(c.env)
-  return c.json({ ok: true, budget }, 200, cors)
+  return c.json({ ok: true, budget }, 200, corsAnalyzeHeaders(c.req.raw))
 })
 
-app.options('/api/site-plan', (c) => c.body(null, 204, cors))
+app.options('/api/site-plan', (c) => c.body(null, 204, corsAnalyzeHeaders(c.req.raw)))
 app.get('/api/site-plan', (c) => respondSitePlanJson(c))
 
-app.options('/api/site-plan.json', (c) => c.body(null, 204, cors))
+app.options('/api/site-plan.json', (c) => c.body(null, 204, corsAnalyzeHeaders(c.req.raw)))
 app.get('/api/site-plan.json', (c) => respondSitePlanJson(c))
 
-app.options('/api/analyze', (c) => c.body(null, 204, cors))
+app.options('/api/analyze', (c) => c.body(null, 204, corsAnalyzeHeaders(c.req.raw)))
 
 app.post('/api/analyze', async (c) => {
   let body: unknown
   try {
     body = await c.req.json()
   } catch {
-    return c.json({ ok: false, error: 'json_required', message: 'JSON body required' }, 400, cors)
+    return c.json(
+      { ok: false, error: 'json_required', message: 'JSON body required' },
+      400,
+      corsAnalyzeHeaders(c.req.raw),
+    )
   }
   const parsed = parseAnalyzeRequestBody(body)
   if (!parsed.ok) {
-    return c.json({ ok: false, error: parsed.error, message: parsed.message }, 400, cors)
+    return c.json(
+      { ok: false, error: parsed.error, message: parsed.message },
+      400,
+      corsAnalyzeHeaders(c.req.raw),
+    )
   }
   const result = await analyzeSite(parsed.site)
   if (!result.ok) {
@@ -58,7 +71,7 @@ app.post('/api/analyze', async (c) => {
         : result.error === 'not_html'
           ? 422
           : 502
-    return c.json(result, status, cors)
+    return c.json(result, status, corsAnalyzeHeaders(c.req.raw))
   }
 
   result.summary.crawl = await applyRenderingBudgetToCrawl(c.env, result.summary.crawl)
@@ -70,14 +83,14 @@ app.post('/api/analyze', async (c) => {
       handoff: buildAgentHandoff(result.summary),
     },
     200,
-    cors,
+    corsAnalyzeHeaders(c.req.raw),
   )
 })
 
-app.options('/api/content', (c) => c.body(null, 204, cors))
+app.options('/api/content', (c) => c.body(null, 204, corsAnalyzeHeaders(c.req.raw)))
 app.post('/api/content', (c) => respondContentJson(c))
 
-app.options('/api/summary', (c) => c.body(null, 204, cors))
+app.options('/api/summary', (c) => c.body(null, 204, corsAnalyzeHeaders(c.req.raw)))
 app.get('/api/summary', (c) => respondSitePlanJson(c))
 
 export default {

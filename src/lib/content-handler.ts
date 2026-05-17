@@ -4,9 +4,8 @@ import { readBrowserBudgetStatus } from './browser-budget'
 import { corsAnalyzeHeaders, parseContentRequestBody } from './analyze-http'
 import { fetchSiteContentWithBrowserRendering } from './rendering-content'
 
-const cors = corsAnalyzeHeaders
-
 export async function respondContentJson(c: Context): Promise<Response> {
+  const cors = corsAnalyzeHeaders(c.req.raw)
   let body: unknown
   try {
     body = await c.req.json()

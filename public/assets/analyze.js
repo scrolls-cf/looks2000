@@ -1,4 +1,10 @@
 ;(function () {
+  function fleetApiPath(path) {
+    const p = path.startsWith('/') ? path.slice(1) : path
+    if (/^\/apps\/[^/]+/.test(window.location.pathname)) return p
+    return '/' + p
+  }
+
   const form = document.getElementById('analyze-form')
   const siteField = document.getElementById('field-site')
   const siteError = document.getElementById('field-site-error')
@@ -206,7 +212,7 @@
 
   async function budgetAllowsContent() {
     try {
-      const r = await fetch('/api/browser-budget')
+      const r = await fetch(fleetApiPath('api/browser-budget'))
       const d = /** @type {Record<string, unknown>} */ (await r.json().catch(() => ({})))
       const budget = d.budget
       if (budget && typeof budget === 'object') {
@@ -259,7 +265,7 @@
     renderFetchProgress({ plan: 'current', content: 'pending' })
 
     try {
-      const res = await fetch('/api/analyze', {
+      const res = await fetch(fleetApiPath('api/analyze'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ site }),
@@ -308,7 +314,7 @@
 
       renderFetchProgress({ plan: 'done', content: 'current' })
 
-      const resContent = await fetch('/api/content', {
+      const resContent = await fetch(fleetApiPath('api/content'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ summary: lastSummary }),

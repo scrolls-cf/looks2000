@@ -3,6 +3,7 @@
   "name": "looks2000",
   "main": "src/index.ts",
   "compatibility_date": "2026-05-10",
+  // Fleet: no public *.workers.dev — use scrollsmatrix (Cloudflare Access) only.
   "workers_dev": false,
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
@@ -25,10 +26,15 @@
   // "kv_namespaces": [{ "binding": "BROWSER_USAGE", "id": "…", "preview_id": "…" }],
   "secrets_store_secrets": [
     {
+      "binding": "devscrolls_scrollsmatrix_crypto_matrix_shared_secret",
+      "store_id": "cf7f63f9d571485992997ffb96ec5075",
+      "secret_name": "devscrolls_scrollsmatrix_crypto_matrix_shared_secret",
+    },
+    {
       "binding": "devscrolls_repo_factory_operator_cloudflare_api_token",
       "store_id": "cf7f63f9d571485992997ffb96ec5075",
-      "secret_name": "devscrolls_repo_factory_operator_cloudflare_api_token"
-    }
+      "secret_name": "devscrolls_repo_factory_operator_cloudflare_api_token",
+    },
   ],
   "observability": {
     "enabled": true

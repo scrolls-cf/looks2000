@@ -4,9 +4,8 @@ import { buildAgentHandoff } from './agent-handoff'
 import { analyzeSite } from './analyze-site'
 import { corsAnalyzeHeaders, parseSummaryQuerySite } from './analyze-http'
 
-const cors = corsAnalyzeHeaders
-
 export async function respondSitePlanJson(c: Context): Promise<Response> {
+  const cors = corsAnalyzeHeaders(c.req.raw)
   const parsed = parseSummaryQuerySite(c.req.query('site'))
   if (!parsed.ok) {
     return c.json({ ok: false, error: parsed.error, message: parsed.message }, 400, cors)
