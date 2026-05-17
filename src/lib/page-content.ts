@@ -20,6 +20,12 @@ export type PageContent = {
   ctas: string[]
 }
 
+export type RenderingRouteFailure = {
+  path: string
+  error: string
+  message: string
+}
+
 export type SiteContent = {
   fetched_at: string
   method: 'browser'
@@ -28,7 +34,19 @@ export type SiteContent = {
   rendering?: {
     provider: 'cloudflare_browser_rendering_api'
     session_browser_ms: number
+    load_profile: 'static' | 'js_heavy'
+    failed_routes?: RenderingRouteFailure[]
   }
+}
+
+/** True when extracted page has copy worth including in handoff. */
+export function pageContentHasCopy(page: PageContent): boolean {
+  if (page.h1?.trim()) return true
+  if (page.headings.some((h) => h.trim().length > 0)) return true
+  if (page.ctas.some((c) => c.trim().length > 0)) return true
+  return page.sections.some(
+    (sec) => sec.text.trim().length > 0 || sec.bullets.some((b) => b.trim().length > 0),
+  )
 }
 
 export function filterContextFromSummary(summary: SiteSummary): RebuildFilterContext {

@@ -22,7 +22,7 @@ If the package has **no** `migrations/` directory and **no** `db:migrate:remote`
    - From the **Worker package root** (e.g. **`jobs/`**), with fleet env loaded per [`scaffold-env-dotenv-only.mdc`](./scaffold-env-dotenv-only.mdc) and [`agents-run-local-commands.mdc`](./agents-run-local-commands.mdc):
    - **`npm run db:migrate:remote`**
    - If the script is missing, run the equivalent from **`package.json`** (fleet default: **`wrangler d1 migrations apply <database_name> --remote`**).
-3. Load **`CLOUDFLARE_API_TOKEN`** for Wrangler (from the package **`.env`** or **`scrollsmatrix/.env`** via **`devscrolls_repo_factory_operator_cloudflare_api_token`** / [`scrollsmatrix/src/load-env.js`](../../scrollsmatrix/src/load-env.js) when developing a sibling fork). **Run the command yourself** — do not tell the user to migrate by hand unless you lack credentials.
+3. For Wrangler CLI, export **`CLOUDFLARE_API_TOKEN`** from **`devscrolls_repo_factory_operator_cloudflare_api_token`** in this package’s **`.env`** or **`scrollsmatrix/.env`** (Wrangler’s env name only — looks2000 does not read **`CLOUDFLARE_API_TOKEN`** at runtime). **Run the command yourself** — do not tell the user to migrate by hand unless you lack credentials.
 4. **Report** which migration files applied and that remote D1 was updated (or the exact Wrangler error).
 
 Pair with [`commit-push-ship-worker-production.mdc`](./commit-push-ship-worker-production.mdc): push/deploy does **not** replace this step.

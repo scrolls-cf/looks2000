@@ -20,7 +20,7 @@ Configure in Cursor via `mcp-remote` (see upstream README).
 | 1 | Static `fetch` — same as **looks1999** |
 | 2 | `POST /accounts/{id}/browser-rendering/content` (quick action) per route |
 
-Token: Secrets Store **`devscrolls_repo_factory_operator_cloudflare_api_token`** or local **`CLOUDFLARE_API_TOKEN`** (needs Browser Rendering write).
+Token: **`devscrolls_repo_factory_operator_cloudflare_api_token`** (Secrets Store in prod; same key in **`.env`** for `wrangler dev`). Needs Browser Rendering write.
 
 ## Billing / budget lock
 

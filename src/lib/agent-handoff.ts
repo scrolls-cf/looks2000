@@ -1,6 +1,6 @@
 import type { BrandAsset, BusinessInfo, ContentSection, SiteSummary } from './analyze-types'
 import type { CrawlBlocker } from './crawl-policy'
-import type { PageContent, SiteContent } from './page-content'
+import type { PageContent, RenderingRouteFailure, SiteContent } from './page-content'
 
 /** Flat, compact JSON for LLM ingestion and UI copy (built on the Worker). */
 export type AgentHandoffRoute = {
@@ -32,6 +32,8 @@ export type AgentHandoff = {
   routes: AgentHandoffRoute[]
   pages?: AgentHandoffPage[]
   content_fetched_at?: string
+  /** Routes in site plan that Browser Rendering did not return usable copy for. */
+  content_skipped?: RenderingRouteFailure[]
   crawl?: AgentHandoffCrawl
 }
 
@@ -58,6 +60,8 @@ export function buildAgentHandoff(
   if (hasContent && content) {
     handoff.content_fetched_at = content.fetched_at
     handoff.pages = pagesFromContent(content, routes)
+    const skipped = content.rendering?.failed_routes
+    if (skipped?.length) handoff.content_skipped = skipped
   } else {
     handoff.crawl = compactCrawl(summary)
   }

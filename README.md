@@ -7,6 +7,6 @@ npm ci
 npm run dev
 ```
 
-Set **`CLOUDFLARE_API_TOKEN`** in `.env` (or fleet Secrets Store) with Browser Rendering write. Create KV namespaces and update `wrangler.jsonc` — see **`docs/BROWSER-RENDERING-MCP.md`**.
+Copy **`.env.example`** → **`.env`** (matrix secret + **`devscrolls_repo_factory_operator_cloudflare_api_token`** with Browser Rendering write). KV is in **`wrangler.jsonc`** — see **`docs/BROWSER-RENDERING-MCP.md`**.
 
 Compare with looks1999: **`docs/COMPARE-LOOKS1999.md`**.

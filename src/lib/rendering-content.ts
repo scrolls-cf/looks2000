@@ -4,10 +4,14 @@ import {
   budgetPeriodKey,
   parseBrowserRenderingPlan,
 } from './browser-rendering-config'
-import { fetchRenderedHtml } from './browser-rendering-client'
+import {
+  fetchRenderedHtml,
+  resolveLoadProfile,
+  type BrowserRenderingLoadProfile,
+} from './browser-rendering-client'
 import { routeUrlsFromPaths } from './crawl-policy'
-import type { SiteContent } from './page-content'
-import { filterContextFromSummary, pageContentFromHtml } from './page-content'
+import type { RenderingRouteFailure, SiteContent } from './page-content'
+import { filterContextFromSummary, pageContentFromHtml, pageContentHasCopy } from './page-content'
 import { parseHtmlDocument } from './parse-html'
 import { validatePublicHttpUrl } from './url-guard'
 
@@ -59,7 +63,7 @@ export async function fetchSiteContentWithBrowserRendering(
       ok: false,
       error: 'rendering_token_missing',
       message:
-        'Cloudflare API token missing (Secrets Store devscrolls_repo_factory_operator_cloudflare_api_token or CLOUDFLARE_API_TOKEN). Token needs Browser Rendering write.',
+        'Cloudflare API token missing (Secrets Store devscrolls_repo_factory_operator_cloudflare_api_token). Token needs Browser Rendering write.',
     }
   }
 
@@ -77,7 +81,12 @@ export async function fetchSiteContentWithBrowserRendering(
   const plan = parseBrowserRenderingPlan(env.BROWSER_RENDERING_PLAN)
   const period = budgetPeriodKey(plan)
   const filterCtx = filterContextFromSummary(summary)
+  const baseProfile = resolveLoadProfile(
+    summary.site_plan.platform,
+    summary.has_page_copy,
+  )
   const pages: SiteContent['pages'] = {}
+  const failedRoutes: RenderingRouteFailure[] = []
   let sessionMs = 0
 
   for (const [path, url] of entries) {
@@ -93,26 +102,62 @@ export async function fetchSiteContentWithBrowserRendering(
           message: freshBudget.reason ?? 'Browser Rendering budget exhausted.',
         }
       }
+      failedRoutes.push({
+        path,
+        error: 'browser_budget_exhausted',
+        message: freshBudget.reason ?? 'Browser Rendering budget exhausted.',
+      })
       break
     }
 
-    const rendered = await fetchRenderedHtml(accountId, apiToken, guard.url.href)
-    if (!rendered.ok) {
+    const fetched = await fetchRouteRenderedPage(
+      accountId,
+      apiToken,
+      guard.url.href,
+      baseProfile,
+      filterCtx,
+    )
+
+    if (!fetched.ok) {
+      sessionMs += fetched.browser_ms_used
+      if (fetched.browser_ms_used > 0) {
+        await recordBrowserMsUsed(env.BROWSER_USAGE, plan, period, fetched.browser_ms_used)
+      }
       if (path === '/') {
         return {
           ok: false,
-          error: rendered.error,
-          message: `Homepage Browser Rendering failed: ${rendered.message}`,
+          error: fetched.error,
+          message: `Homepage Browser Rendering failed: ${fetched.message}`,
         }
       }
+      failedRoutes.push({
+        path,
+        error: fetched.error,
+        message: fetched.message,
+      })
       continue
     }
 
-    sessionMs += rendered.browser_ms_used
-    await recordBrowserMsUsed(env.BROWSER_USAGE, plan, period, rendered.browser_ms_used)
+    sessionMs += fetched.browser_ms_used
+    await recordBrowserMsUsed(env.BROWSER_USAGE, plan, period, fetched.browser_ms_used)
 
-    const parsed = parseHtmlDocument(rendered.html, guard.url.href, guard.url.href)
-    pages[path] = pageContentFromHtml(guard.url.href, rendered.html, parsed, filterCtx)
+    if (!pageContentHasCopy(fetched.page)) {
+      if (path === '/' && Object.keys(pages).length === 0) {
+        return {
+          ok: false,
+          error: 'rendering_no_copy',
+          message: 'Browser Rendering returned HTML but no usable page copy on homepage.',
+        }
+      }
+      failedRoutes.push({
+        path,
+        error: 'rendering_no_copy',
+        message: 'Rendered HTML had no extractable copy after filtering.',
+      })
+      continue
+    }
+
+    pages[path] = fetched.page
   }
 
   if (Object.keys(pages).length === 0) {
@@ -132,25 +177,82 @@ export async function fetchSiteContentWithBrowserRendering(
       rendering: {
         provider: 'cloudflare_browser_rendering_api',
         session_browser_ms: sessionMs,
+        load_profile: baseProfile,
+        ...(failedRoutes.length ? { failed_routes: failedRoutes } : {}),
       },
     },
   }
 }
 
-async function resolveBrowserRenderingToken(env: {
-  devscrolls_repo_factory_operator_cloudflare_api_token?: SecretsStoreSecret
-  CLOUDFLARE_API_TOKEN?: string
-}): Promise<string | null> {
-  const fromStore = env.devscrolls_repo_factory_operator_cloudflare_api_token
-  if (fromStore) {
-    try {
-      const v = await fromStore.get()
-      const t = String(v ?? '').trim()
-      if (t) return t
-    } catch {
-      /* fall through */
+type RouteFetchResult =
+  | { ok: true; page: SiteContent['pages'][string]; browser_ms_used: number }
+  | { ok: false; error: string; message: string; browser_ms_used: number }
+
+async function fetchRouteRenderedPage(
+  accountId: string,
+  apiToken: string,
+  url: string,
+  baseProfile: BrowserRenderingLoadProfile,
+  filterCtx: ReturnType<typeof filterContextFromSummary>,
+): Promise<RouteFetchResult> {
+  let profile = baseProfile
+  let rendered = await fetchRenderedHtml(accountId, apiToken, url, profile)
+  let totalMs = rendered.ok ? rendered.browser_ms_used : 0
+
+  if (!rendered.ok) {
+    return {
+      ok: false,
+      error: rendered.error,
+      message: rendered.message,
+      browser_ms_used: totalMs,
     }
   }
-  const direct = String(env.CLOUDFLARE_API_TOKEN ?? '').trim()
-  return direct || null
+
+  let page = htmlToPageContent(url, rendered.html, filterCtx)
+
+  if (!pageContentHasCopy(page) && profile === 'static') {
+    const retry = await fetchRenderedHtml(accountId, apiToken, url, 'js_heavy')
+    totalMs += retry.ok ? retry.browser_ms_used : 0
+    if (retry.ok) {
+      const retried = htmlToPageContent(url, retry.html, filterCtx)
+      if (pageContentHasCopy(retried)) {
+        page = retried
+        profile = 'js_heavy'
+      }
+    }
+  }
+
+  if (!pageContentHasCopy(page)) {
+    return {
+      ok: false,
+      error: 'rendering_no_copy',
+      message: `No extractable copy (load profile: ${profile}).`,
+      browser_ms_used: totalMs,
+    }
+  }
+
+  return { ok: true, page, browser_ms_used: totalMs }
+}
+
+function htmlToPageContent(
+  url: string,
+  html: string,
+  filterCtx: ReturnType<typeof filterContextFromSummary>,
+): SiteContent['pages'][string] {
+  const parsed = parseHtmlDocument(html, url, url)
+  return pageContentFromHtml(url, html, parsed, filterCtx)
+}
+
+async function resolveBrowserRenderingToken(env: {
+  devscrolls_repo_factory_operator_cloudflare_api_token?: SecretsStoreSecret
+}): Promise<string | null> {
+  const fromStore = env.devscrolls_repo_factory_operator_cloudflare_api_token
+  if (!fromStore) return null
+  try {
+    const v = await fromStore.get()
+    const t = String(v ?? '').trim()
+    return t || null
+  } catch {
+    return null
+  }
 }
