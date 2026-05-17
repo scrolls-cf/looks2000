@@ -26,8 +26,6 @@
         </p>
       </div>
 
-      <div id="alert-error" class="alert alert-error mb-4 hidden text-sm" role="alert"></div>
-
       <div
         id="fetch-progress"
         class="mb-4 hidden flex flex-col gap-3"
@@ -67,8 +65,9 @@
           </div>
         </div>
 
-        <div id="submit-row" class="flex justify-end">
-          <button id="btn-submit" type="submit" class="btn btn-primary btn-md min-w-[7.5rem]" disabled>
+        <div id="submit-row" class="flex min-h-10 items-center justify-end gap-3">
+          <p id="alert-error" class="hidden min-w-0 flex-1 text-right text-xs leading-snug text-error" role="alert"></p>
+          <button id="btn-submit" type="submit" class="btn btn-primary btn-md min-h-10 min-w-[7.5rem] shrink-0" disabled>
             fetch
           </button>
         </div>

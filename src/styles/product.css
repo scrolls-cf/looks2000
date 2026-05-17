@@ -37,4 +37,8 @@
     color: color-mix(in oklab, var(--color-base-content) 72%, transparent);
     font-weight: 500;
   }
+
+  #submit-row #alert-error:not(.hidden) {
+    padding-block: 0.125rem;
+  }
 }

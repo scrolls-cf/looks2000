@@ -210,13 +210,25 @@
     return null
   }
 
+  /** @param {Response} res */
+  async function budgetFromResponse(res) {
+    const d = /** @type {Record<string, unknown>} */ (await res.json().catch(() => ({})))
+    const budget = d.budget ?? d.browser_rendering
+    if (budget && typeof budget === 'object') {
+      return /** @type {Record<string, unknown>} */ (budget)
+    }
+    return null
+  }
+
   async function budgetAllowsContent() {
     try {
-      const r = await fetch(fleetApiPath('api/browser-budget'))
-      const d = /** @type {Record<string, unknown>} */ (await r.json().catch(() => ({})))
-      const budget = d.budget
-      if (budget && typeof budget === 'object') {
-        return /** @type {Record<string, unknown>} */ (budget).available === true
+      let r = await fetch(fleetApiPath('api/browser-budget'))
+      let budget = await budgetFromResponse(r)
+      if (budget) return budget.available === true
+      if (r.status === 404) {
+        r = await fetch(fleetApiPath('health'))
+        budget = await budgetFromResponse(r)
+        if (budget) return budget.available === true
       }
     } catch {
       /* ignore */
